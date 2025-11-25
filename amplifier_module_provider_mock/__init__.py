@@ -6,7 +6,9 @@ Returns pre-configured responses without calling real APIs.
 import logging
 from typing import Any
 
+from amplifier_core import ModelInfo
 from amplifier_core import ModuleCoordinator
+from amplifier_core import ProviderInfo
 from amplifier_core.message_models import ChatRequest
 from amplifier_core.message_models import ChatResponse
 from amplifier_core.message_models import TextBlock
@@ -39,6 +41,33 @@ class MockProvider:
         self.coordinator = coordinator
         self.debug = config.get("debug", False)
         self.raw_debug = config.get("raw_debug", False)
+
+    def get_info(self) -> ProviderInfo:
+        """Get provider metadata."""
+        return ProviderInfo(
+            id="mock",
+            display_name="Mock Provider",
+            credential_env_vars=[],  # No credentials needed
+            capabilities=["tools", "testing"],
+            defaults={
+                "model": "mock-model",
+                "max_tokens": 4096,
+                "temperature": 0.7,
+            },
+        )
+
+    async def list_models(self) -> list[ModelInfo]:
+        """List available mock models."""
+        return [
+            ModelInfo(
+                id="mock-model",
+                display_name="Mock Model",
+                context_window=100000,
+                max_output_tokens=4096,
+                capabilities=["tools", "testing"],
+                defaults={"temperature": 0.7, "max_tokens": 4096},
+            ),
+        ]
 
     async def complete(self, request: ChatRequest, **kwargs) -> ChatResponse:
         """Generate a mock completion from ChatRequest."""
