@@ -3,6 +3,9 @@ Mock provider module for testing.
 Returns pre-configured responses without calling real APIs.
 """
 
+# Amplifier module metadata
+__amplifier_module_type__ = "provider"
+
 import logging
 from typing import Any
 
